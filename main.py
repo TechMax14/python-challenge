@@ -2,11 +2,11 @@ import csv
 
 # Set the path and output for the budget_data.csv file
 budget_path = "C:/Users/fishm/Documents/UT Bootcamp/HW3/python-challenge/PyBank/Resources/budget_data.csv"
-budget_output = "budget_results.txt"
+budget_output = "C:/Users/fishm/Documents/UT Bootcamp/HW3/python-challenge/analysis/budget_results.txt"
 
 # Set the path and output for the election_data.csv file
 election_path = "C:/Users/fishm/Documents/UT Bootcamp/HW3/python-challenge/PyPoll/Resources/election_data.csv"
-election_output = "election_results.txt"
+election_output = "C:/Users/fishm/Documents/UT Bootcamp/HW3/python-challenge/analysis/election_results.txt"
 
 # Initialize budget data variables
 total_months = 0
@@ -28,7 +28,7 @@ with open(budget_path, newline="") as csvfile:
     csvreader = csv.reader(csvfile, delimiter=",")
     header = next(csvreader)  # Skips header row
 
-    # Iterate through the rows in the CSV file
+    # Iterate through the rows
     for row in csvreader:
         # Count the total number of months
         total_months += 1
@@ -50,13 +50,23 @@ with open(budget_path, newline="") as csvfile:
                 greatest_decrease[0] = row[0]
                 greatest_decrease[1] = profit_loss_change
 
+        # Set current profit/loss to previos profit/loss for next iteration
         previous_profit_loss = current_profit_loss
 
 # Calculate the average change in profit/loss
 average_change = sum(profit_loss_changes) / len(profit_loss_changes)
 
+# Print results in terminal
+print("\n[ Financial Analysis ]")
+print("-----------------------------")
+print(f"Total Months: {total_months}")
+print(f"Total: ${total_profit_loss}")
+print(f"Average Change: ${average_change:.2f}")
+print(f"Greatest Increase in Profits: {greatest_increase[0]} (${greatest_increase[1]})")
+print(f"Greatest Decrease in Profits: {greatest_decrease[0]} (${greatest_decrease[1]})")
+
 with open(budget_output, "w") as file:
-# Print the analysis results
+    # Print results in analysis folder
     file.write("Financial Analysis\n")
     file.write("-----------------------------\n")
     file.write(f"Total Months: {total_months}\n")
@@ -65,7 +75,8 @@ with open(budget_output, "w") as file:
     file.write(f"Greatest Increase in Profits: {greatest_increase[0]} (${greatest_increase[1]})\n")
     file.write(f"Greatest Decrease in Profits: {greatest_decrease[0]} (${greatest_decrease[1]})\n")
 
-print(f"Budget results exported to {budget_output}")
+print("-----------------------------")
+print(f"[ Budget results exported to {budget_output} ]")
 
 
 #------------------------------------------------------------------------------ Election Data Portion ---------------------------------------------------------------------------------------
@@ -74,12 +85,12 @@ with open(election_path, newline="") as csvfile:
     csvreader = csv.reader(csvfile, delimiter=",")
     header = next(csvreader)  # Skip the header row
 
-    # Iterate through the rows in the CSV file
+    # Iterate through the rows
     for row in csvreader:
         # Count the total number of votes
         total_votes += 1
 
-        # Get the candidate from the row
+        # Get the candidate from the 3rd row
         candidate = row[2]
 
         # Update the vote count for the candidate
@@ -88,9 +99,29 @@ with open(election_path, newline="") as csvfile:
         else:
             candidates[candidate] = 1
 
+# Print the results to terminsl
+print("\n\n[ Election Results ]")
+print("-------------------------")
+print(f"Total Votes: {total_votes}")
+print("-------------------------")
+
+# Calculate and print the results for each candidate
+for candidate, votes in candidates.items():
+    percentage = (votes / total_votes) * 100
+    print(f"{candidate}: {percentage:.3f}% ({votes})")
+
+    # Check if the current candidate has more votes than the previous maximum
+    if votes > max_votes:
+        max_votes = votes
+        winner = candidate
+
+print("-------------------------")
+print(f"Winner: {winner}")
+print("-------------------------")
+
 # Open the output file in write mode
 with open(election_output, "w") as file:
-    # Write the analysis results to the file
+    # Write the analysis results to the output file
     file.write("Election Results\n")
     file.write("-------------------------\n")
     file.write(f"Total Votes: {total_votes}\n")
@@ -105,11 +136,11 @@ with open(election_output, "w") as file:
         if votes > max_votes:
             max_votes = votes
             winner = candidate
-
+    # Your winner is...
     file.write("-------------------------\n")
     file.write(f"Winner: {winner}\n")
     file.write("-------------------------\n")
 
 # Print a message indicating the export was successful
-print(f"Election results exported to {election_output}")
+print(f"[ Election results exported to {election_output} ]")
 
